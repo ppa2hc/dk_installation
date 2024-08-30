@@ -23,7 +23,7 @@ Type=oneshot
 ExecStart=/usr/bin/xhost +local:
 User=$USERNAME
 Environment=DISPLAY=:0
-ExecStartPre=/bin/sleep 2  # Optional: delay start if needed for desktop readiness
+#ExecStartPre=/bin/sleep 2  # Optional: delay start if needed for desktop readiness
 
 [Install]
 WantedBy=default.target
