@@ -3,6 +3,14 @@
 > Info: This repo provides a guideline to install the dreamOS.
 
 ## Prerequisites:
+
+Install Docker on your target system.
+```
+sudo apt update; sudo apt install docker.io
+```
+
+## Install dreamOS
+
 Git clone dk_installation repo.  
 ```
 git clone https://github.com/ppa2hc/dk_installation.git
@@ -10,7 +18,6 @@ cd dk_installation
 chmod +x *
 ```
 
-## Install dreamOS
 Defaut installation without IVI.  
 ```
 sudo ./dk_install.sh
