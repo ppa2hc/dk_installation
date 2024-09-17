@@ -26,6 +26,7 @@ fi
 # Set Env Variables
 HOME_DIR="/home/$DK_USER"
 DOCKER_SHARE_PARAM="-v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker"
+DOCKER_AUDIO_PARAM="--device /dev/snd --group-add audio -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native -v $HOME_DIR/.config/pulse/cookie:/root/.config/pulse/cookie"
 LOG_LIMIT_PARAM="--log-opt max-size=10m --log-opt max-file=3"
 DOCKER_HUB_NAMESPACE="phongbosch"
 
@@ -34,8 +35,9 @@ echo "DK_USER: $DK_USER"
 echo "ARCH: $ARCH"
 echo "HOME_DIR: $HOME_DIR"
 echo "DOCKER_SHARE_PARAM: $DOCKER_SHARE_PARAM"
-echo "DOCKER_HUB_NAMESPACE: $DOCKER_HUB_NAMESPACE"
+echo "DOCKER_AUDIO_PARAM: $DOCKER_AUDIO_PARAM"
 echo "LOG_LIMIT_PARAM: $LOG_LIMIT_PARAM"
+echo "DOCKER_HUB_NAMESPACE: $DOCKER_HUB_NAMESPACE"
 
 echo "Create dk directoties ..."
 mkdir -p /home/$DK_USER/.dk/dk_manager/ /home/$DK_USER/.dk/dk_vssgeneration
@@ -87,5 +89,9 @@ if [[ "$dk_ivi_value" == "true" ]]; then
 	docker stop dk_ivi; docker rm dk_ivi ; docker run -d -it --name dk_ivi -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=:0 --device /dev/dri:/dev/dri --restart unless-stopped $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM -v $HOME_DIR/.dk/dk_manager/prototypes:/app/.dk/dk_manager/prototypes $DOCKER_HUB_NAMESPACE/dk_ivi:latest
     # Add your actions here
 else
-    echo "To Install dk_ivi, run ./dk_install dk_ivi=true"
+    echo "To Install dk_ivi, run './dk_install dk_ivi=true'"
 fi
+
+echo "To Install dreamKIT services, run './dk_install_services dk_services_[name]=true'"
+echo "[name]: tts, coffee"
+echo "e.g., ./dk_install_services dk_services_tts=true"
