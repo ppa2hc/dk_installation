@@ -46,14 +46,24 @@ cd /home/$DK_USER/.dk
 echo "Create dk_network ..."
 docker network create dk_network
 
+echo "Install installation repo"
+DK_INSTALLATION_DIR="$HOME_DIR/.dk/dk_installation"
+if [ ! -d "$DK_INSTALLATION_DIR" ]; then
+    # Folder does not exist, do something
+    echo "Folder $DK_INSTALLATION_DIR does not exist. Downloading ..."
+    git clone https://github.com/ppa2hc/dk_installation.git
+else
+    echo "Folder $DK_INSTALLATION_DIR already exists."
+fi
+
 echo "Install APP SDK"
 APP_SDK_DIR="$HOME_DIR/.dk/dk_app_python_template"
 if [ ! -d "$APP_SDK_DIR" ]; then
     # Folder does not exist, do something
-    echo "Folder $FOLDER_PATH does not exist. Downloading ..."
+    echo "Folder $APP_SDK_DIR does not exist. Downloading ..."
     git clone https://github.com/ppa2hc/dk_app_python_template.git
 else
-    echo "Folder $FOLDER_PATH already exists."
+    echo "Folder $APP_SDK_DIR already exists."
 fi
 
 echo "Install base image for velocitas app ..."
