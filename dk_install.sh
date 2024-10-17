@@ -12,6 +12,24 @@ fi
 # Get the current directory path
 CURRENT_DIR=$(pwd)
 
+# Add current user to sudo group of docker
+# Check if the docker group exists
+if getent group docker > /dev/null 2>&1; then
+    echo "Docker: Docker group exists, proceeding..."
+else
+    echo "Docker: Docker group does not exist. Creating docker group..."
+    sudo groupadd docker
+fi
+# Add the user to the docker group
+if sudo usermod -aG docker "$DK_USER"; then
+    echo "Docker: User '$DK_USER' has been added to the docker group."
+else
+    echo "Docker: Failed to add user '$DK_USER' to the docker group."
+    exit 1
+fi
+# Inform the user that they need to log out and back in for the changes to take effect
+echo "Docker: Please log out and log back in for the group changes to take effect."
+
 # Detect the system architecture
 ARCH_DETECT=$(uname -m)
 # Set ARCH variable based on the detected architecture
@@ -108,3 +126,7 @@ fi
 echo "To Install dreamKIT services, run './dk_install_services dk_services_[name]=true'"
 echo "[name]: tts, coffee"
 echo "e.g., ./dk_install_services dk_services_tts=true"
+
+echo "------------------------------------------------------------------"
+echo "Please reboot your system for dreamSW to take effect !!!!!!!!!!!!!"
+echo "------------------------------------------------------------------"
