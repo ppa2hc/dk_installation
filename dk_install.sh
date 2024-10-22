@@ -117,7 +117,8 @@ if [[ "$dk_ivi_value" == "true" ]]; then
     echo "enable xhost local"
 	$CURRENT_DIR/dk_enable_xhost.sh
     echo "Instal dk_ivi ..."
-    docker stop dk_ivi; docker rm dk_ivi ; docker run -d -it --name dk_ivi -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=:0 --device /dev/dri:/dev/dri --restart unless-stopped $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM -v ~/.dk:/app/.dk -e DKCODE=dreamKIT -e DK_USER=$DK_USER -e DK_DOCKER_HUB_NAMESPACE=$DK_DOCKER_HUB_NAMESPACE -e DK_ARCH=$DK_ARCH -v /usr/bin/code:/usr/bin/code -e DK_CONTAINER_ROOT="/app/.dk/" dk_ivi:latest
+    docker pull $DOCKER_HUB_NAMESPACE/dk_ivi:latest
+    docker stop dk_ivi; docker rm dk_ivi ; docker run -d -it --name dk_ivi -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=:0 --device /dev/dri:/dev/dri --restart unless-stopped $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM -v ~/.dk:/app/.dk -e DKCODE=dreamKIT -e DK_USER=$DK_USER -e DK_DOCKER_HUB_NAMESPACE=$DK_DOCKER_HUB_NAMESPACE -e DK_ARCH=$DK_ARCH -v /usr/bin/code:/usr/bin/code -e DK_CONTAINER_ROOT="/app/.dk/" $DOCKER_HUB_NAMESPACE/dk_ivi:latest
     # Add your actions here
 else
     echo "To Install dk_ivi, run './dk_install dk_ivi=true'"
