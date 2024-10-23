@@ -76,7 +76,7 @@ EOF
 
 # Check if the OS is Ubuntu 24.x
 OS_VERSION=$(lsb_release -rs)
-if [[ "$OS_VERSION" != 24.* ]]; then
+if [[ "$OS_VERSION" == 24.* ]]; then
     echo "below script only runs on Ubuntu 24.x. Detected version: $OS_VERSION."
 
     # Proceed with creating the xhost-allow.sh script
