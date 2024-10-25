@@ -124,10 +124,6 @@ else
     echo "To Install dk_ivi, run './dk_install dk_ivi=true'"
 fi
 
-echo "To Install dreamKIT services, run './dk_install_services dk_services_[name]=true'"
-echo "[name]: tts, coffee"
-echo "e.g., ./dk_install_services dk_services_tts=true"
-
 echo "------------------------------------------------------------------"
 echo "Please reboot your system for dreamSW to take effect !!!!!!!!!!!!!"
 echo "------------------------------------------------------------------"
