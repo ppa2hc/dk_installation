@@ -89,7 +89,7 @@ APP_CPP_SDK_DIR="$HOME_DIR/.dk/dk_app_cpp_template"
 if [ ! -d "$APP_CPP_SDK_DIR" ]; then
     # Folder does not exist, do something
     echo "Folder $APP_CPP_SDK_DIR does not exist. Downloading ..."
-    git clone https://github.com/ppa2hc/dk_cpp_python_template.git
+    git clone https://github.com/ppa2hc/dk_app_cpp_template.git
 else
     echo "Folder $APP_CPP_SDK_DIR already exists."
 fi
