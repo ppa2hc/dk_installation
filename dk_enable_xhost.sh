@@ -74,16 +74,38 @@ EOF
     echo "Autostart .desktop entry created."
 }
 
-# Check if the OS is Ubuntu 24.x
-OS_VERSION=$(lsb_release -rs)
-if [[ "$OS_VERSION" == 24.* ]]; then
-    echo "below script only runs on Ubuntu 24.x. Detected version: $OS_VERSION."
+# Function to check if the OS is Ubuntu
+is_ubuntu() {
+    if [[ -f "/etc/os-release" ]]; then
+        . /etc/os-release
+        [[ "$ID" == "ubuntu" ]]
+        return
+    fi
+    return 1
+}
+# Function to get Ubuntu version
+get_ubuntu_version() {
+    if command -v lsb_release >/dev/null 2>&1; then
+        lsb_release -rs  # Returns Ubuntu version (e.g., 22.04, 24.04)
+    elif [[ -f "/etc/os-release" ]]; then
+        . /etc/os-release
+        echo "$VERSION_ID"  # Returns numeric version from /etc/os-release
+    else
+        echo "Unknown"
+    fi
+}
 
+if is_ubuntu; then
+    UBUNTU_VERSION=$(get_ubuntu_version)
+    echo "below script only runs on Ubuntu version: $OS_VERSION."
     # Proceed with creating the xhost-allow.sh script
     create_xhost_script
 
     # Proceed with creating the autostart entry to run the script on desktop startup
     create_autostart_entry
+else
+    echo "Warning: This is not ubuntu. Detected OS: $(uname -s)"
+    exit 1
 fi
 
 echo "Setup completed xhost. Please reboot to apply the changes."
