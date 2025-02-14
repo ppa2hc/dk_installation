@@ -94,6 +94,9 @@ else
     echo "Folder $APP_CPP_SDK_DIR already exists."
 fi
 
+echo "Remove Only Dangling Images (No Tags)"
+docker image prune
+
 echo "Install base image for velocitas py app ..."
 docker pull $DOCKER_HUB_NAMESPACE/dk_app_python_template:baseimage
 
