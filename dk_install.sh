@@ -44,6 +44,15 @@ else
     ARCH="unknown"
 fi
 
+
+# Get XDG_RUNTIME_DIR for the user (not root)
+XDG_RUNTIME_DIR=$(sudo -u "$DK_USER" env | grep XDG_RUNTIME_DIR | cut -d= -f2)
+# If empty, manually set it
+if [ -z "$XDG_RUNTIME_DIR" ]; then
+    XDG_RUNTIME_DIR="/run/user/$(id -u "$DK_USER")"
+fi
+echo "Detected XDG_RUNTIME_DIR: $XDG_RUNTIME_DIR"
+
 # Set Env Variables
 HOME_DIR="/home/$DK_USER"
 DOCKER_SHARE_PARAM="-v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker"
