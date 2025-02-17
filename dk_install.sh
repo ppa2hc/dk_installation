@@ -171,10 +171,10 @@ if [[ "$dk_ivi_value" == "true" ]]; then
     echo "Checking for NVIDIA Target Board..."
     if [ -f "/etc/nv_tegra_release" ]; then
         echo "NVIDIA Jetson board detected."
-        docker stop dk_ivi; docker rm dk_ivi ; docker run -d -it --name dk_ivi -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=:0 -e QT_QUICK_BACKEND=software --restart unless-stopped $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM -v $HOME_DIR/.dk:/app/.dk -e DKCODE=dreamKIT -e DK_USER=$DK_USER -e DK_DOCKER_HUB_NAMESPACE=$DOCKER_HUB_NAMESPACE -e DK_ARCH=$ARCH -e DK_CONTAINER_ROOT="/app/.dk/" $DOCKER_HUB_NAMESPACE/dk_ivi:latest
+        docker stop dk_ivi; docker rm dk_ivi ; docker run -d -it --name dk_ivi -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=:0 -e XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR -e QT_QUICK_BACKEND=software --restart unless-stopped $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM -v $HOME_DIR/.dk:/app/.dk -e DKCODE=dreamKIT -e DK_USER=$DK_USER -e DK_DOCKER_HUB_NAMESPACE=$DOCKER_HUB_NAMESPACE -e DK_ARCH=$ARCH -e DK_CONTAINER_ROOT="/app/.dk/" $DOCKER_HUB_NAMESPACE/dk_ivi:latest
     else
         echo "Not NVIDIA board."
-        docker stop dk_ivi; docker rm dk_ivi ; docker run -d -it --name dk_ivi -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=:0 --device /dev/dri:/dev/dri --restart unless-stopped $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM -v $HOME_DIR/.dk:/app/.dk -e DKCODE=dreamKIT -e DK_USER=$DK_USER -e DK_DOCKER_HUB_NAMESPACE=$DOCKER_HUB_NAMESPACE -e DK_ARCH=$ARCH -e DK_CONTAINER_ROOT="/app/.dk/" $DOCKER_HUB_NAMESPACE/dk_ivi:latest
+        docker stop dk_ivi; docker rm dk_ivi ; docker run -d -it --name dk_ivi -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=:0 -e XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR --device /dev/dri:/dev/dri --restart unless-stopped $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM -v $HOME_DIR/.dk:/app/.dk -e DKCODE=dreamKIT -e DK_USER=$DK_USER -e DK_DOCKER_HUB_NAMESPACE=$DOCKER_HUB_NAMESPACE -e DK_ARCH=$ARCH -e DK_CONTAINER_ROOT="/app/.dk/" $DOCKER_HUB_NAMESPACE/dk_ivi:latest
     fi
 else
     echo "To Install dk_ivi, run './dk_install dk_ivi=true'"
