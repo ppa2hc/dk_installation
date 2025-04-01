@@ -1,63 +1,11 @@
 #!/bin/bash
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
-echo "Start dreamOS installation !!!!!!!!!!!!!"
+echo "Start dreamOS SW Update  !!!!!!!!!!!!!"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
-# Determine the user who ran the command
-if [ -n "$SUDO_USER" ]; then
-    # Command was run with sudo
-    DK_USER=$SUDO_USER
-else
-    # Command was not run with sudo, fall back to current user
-    DK_USER=$USER
-fi
 
-# Get the current directory path
-CURRENT_DIR=$(pwd)
-
-# Add current user to sudo group of docker
-# Check if the docker group exists
-if getent group docker > /dev/null 2>&1; then
-    echo "Docker: Docker group exists, proceeding..."
-else
-    echo "Docker: Docker group does not exist. Creating docker group..."
-    sudo groupadd docker
-fi
-# Add the user to the docker group
-if sudo usermod -aG docker "$DK_USER"; then
-    echo "Docker: User '$DK_USER' has been added to the docker group."
-else
-    echo "Docker: Failed to add user '$DK_USER' to the docker group."
-    exit 1
-fi
-# Inform the user that they need to log out and back in for the changes to take effect
-echo "Docker: Please log out and log back in for the group changes to take effect."
-
-# Detect the system architecture
-ARCH_DETECT=$(uname -m)
-# Set ARCH variable based on the detected architecture
-if [[ "$ARCH_DETECT" == "x86_64" ]]; then
-    ARCH="amd64"
-elif [[ "$ARCH_DETECT" == "aarch64" ]]; then
-    ARCH="arm64"
-else
-    ARCH="unknown"
-fi
-
-# Get XDG_RUNTIME_DIR for the user (not root)
-XDG_RUNTIME_DIR=$(sudo -u "$DK_USER" env | grep XDG_RUNTIME_DIR | cut -d= -f2)
-# If empty, manually set it
-if [ -z "$XDG_RUNTIME_DIR" ]; then
-    XDG_RUNTIME_DIR="/run/user/$(id -u "$DK_USER")"
-fi
-echo "Detected XDG_RUNTIME_DIR: $XDG_RUNTIME_DIR"
-
-# Set Env Variables
-HOME_DIR="/home/$DK_USER"
-DOCKER_SHARE_PARAM="-v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker"
-DOCKER_AUDIO_PARAM="--device /dev/snd --group-add audio -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native -v $HOME_DIR/.config/pulse/cookie:/root/.config/pulse/cookie"
-LOG_LIMIT_PARAM="--log-opt max-size=10m --log-opt max-file=3"
-DOCKER_HUB_NAMESPACE="phongbosch"
+# source the installation env
+source /home/.dk/dk_swupdate/dk_swupdate_env.sh
 
 echo "Env Variables:"
 echo "DK_USER: $DK_USER"
@@ -68,10 +16,11 @@ echo "XDG_RUNTIME_DIR: $XDG_RUNTIME_DIR"
 echo "DOCKER_AUDIO_PARAM: $DOCKER_AUDIO_PARAM"
 echo "LOG_LIMIT_PARAM: $LOG_LIMIT_PARAM"
 echo "DOCKER_HUB_NAMESPACE: $DOCKER_HUB_NAMESPACE"
+echo "dk_ara_demo: $dk_ara_demo"
+echo "dk_ivi_value: $dk_ivi_value"
 
 echo "Create dk directoties ..."
-mkdir -p /home/$DK_USER/.dk/dk_manager/vssmapping /home/$DK_USER/.dk/dk_vssgeneration /home/$DK_USER/.dk/dk_swupdate
-cp $CURRENT_DIR/data/dksystem_vssmapping_overlay.vspec /home/$DK_USER/.dk/dk_manager/vssmapping/
+mkdir -p /home/$DK_USER/.dk/dk_manager/vssmapping /home/$DK_USER/.dk/dk_vssgeneration
 cd /home/$DK_USER/.dk
 
 echo "Create dk_network ..."
@@ -159,15 +108,6 @@ docker stop dksystem_vehicledatabroker ; docker rm dksystem_vehicledatabroker ; 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 # Install dk_ara_demo
-dk_ara_demo=""
-# Loop through all input arguments
-for arg in "$@"; do
-    # Check if the argument starts with dk_ara_demo=
-    if [[ "$arg" == dk_ara_demo=* ]]; then
-        # Extract the value after the equal sign
-        dk_ara_demo="${arg#*=}"
-    fi
-done
 if [[ "$dk_ara_demo" == "true" ]]; then
     echo "Install APP CPP SDK"
     APP_CPP_SDK_DIR="$HOME_DIR/.dk/dk_app_cpp_template"
@@ -200,18 +140,7 @@ docker pull ghcr.io/eclipse/kuksa.val/kuksa-client:0.4.2
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 # Install dk_ivi
-dk_ivi_value=""
-# Loop through all input arguments
-for arg in "$@"; do
-    # Check if the argument starts with dk_ivi=
-    if [[ "$arg" == dk_ivi=* ]]; then
-        # Extract the value after the equal sign
-        dk_ivi_value="${arg#*=}"
-    fi
-done
 if [[ "$dk_ivi_value" == "true" ]]; then
-    echo "enable xhost local"
-	$CURRENT_DIR/dk_enable_xhost.sh
     echo "Instal dk_ivi ..."
     docker pull $DOCKER_HUB_NAMESPACE/dk_ivi:latest
 
@@ -226,38 +155,6 @@ if [[ "$dk_ivi_value" == "true" ]]; then
 else
     echo "To Install dk_ivi, run './dk_install dk_ivi=true'"
 fi
-
-
-echo "------------------------------------------------------------------------------------------------------------------------------------"
-echo "------------------------------------------------------------------------------------------------------------------------------------"
-echo "Store environment variables"
-
-# Define the output file (you can change the path as needed)
-mkdir -p /home/.dk/dk_swupdate
-DK_ENV_FILE="/home/.dk/dk_swupdate/dk_swupdate_env.sh"
-> $DK_ENV_FILE
-
-# Write the actual values of the variables to the output file
-cat <<EOF > "${DK_ENV_FILE}"
-#!/bin/bash
-
-DK_USER="${DK_USER}"
-ARCH="${ARCH}"
-HOME_DIR="${HOME_DIR}"
-DOCKER_SHARE_PARAM="${DOCKER_SHARE_PARAM}"
-XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR}"
-DOCKER_AUDIO_PARAM="${DOCKER_AUDIO_PARAM}"
-LOG_LIMIT_PARAM="${LOG_LIMIT_PARAM}"
-DOCKER_HUB_NAMESPACE="${DOCKER_HUB_NAMESPACE}"
-dk_ara_demo="${dk_ara_demo}"
-dk_ivi_value="${dk_ivi_value}"
-EOF
-
-# Optionally, make the output file executable
-chmod +x "${DK_ENV_FILE}"
-
-echo "Environment variables with actual values have been saved to ${DK_ENV_FILE}"
-
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
