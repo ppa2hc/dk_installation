@@ -70,11 +70,37 @@ echo "LOG_LIMIT_PARAM: $LOG_LIMIT_PARAM"
 echo "DOCKER_HUB_NAMESPACE: $DOCKER_HUB_NAMESPACE"
 
 echo "Create dk directoties ..."
-mkdir -p /home/$DK_USER/.dk/dk_manager/ /home/$DK_USER/.dk/dk_vssgeneration
+mkdir -p /home/$DK_USER/.dk/dk_manager/vssmapping /home/$DK_USER/.dk/dk_vssgeneration
+cp $CURRENT_DIR/data/dksystem_vssmapping_overlay.vspec /home/$DK_USER/.dk/dk_manager/vssmapping/
 cd /home/$DK_USER/.dk
 
 echo "Create dk_network ..."
 docker network create dk_network
+
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "Install required utils"
+echo "Installing git ..."
+# Check if git is available
+if command -v git >/dev/null 2>&1; then
+    echo "Git is already installed."
+else
+    echo "Git is not installed. Installing using apt-get..."
+
+    # Update package lists
+    apt-get update
+
+    # Install git without prompting for confirmation
+    apt-get install -y git
+
+    # Verify installation
+    if command -v git >/dev/null 2>&1; then
+        echo "Git has been installed successfully."
+    else
+        echo "There was an error installing Git."
+        exit 1
+    fi
+fi
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
@@ -117,11 +143,18 @@ echo "Install vss_generation ..."
 docker pull $DOCKER_HUB_NAMESPACE/dk_vssgeneration_image:vss4.0
 docker rm vssgen;docker run -it --name vssgen -v $HOME_DIR/.dk/dk_vssgeneration/:/app/dk_vssgeneration -v $HOME_DIR/.dk/dk_manager/vssmapping/vssmapping_overlay.vspec:/app/.dk/dk_manager/vssmapping/vssmapping_overlay.vspec:ro $LOG_LIMIT_PARAM $DOCKER_HUB_NAMESPACE/dk_vssgeneration_image:vss4.0
 
+echo "Install vss_generation for dksystem..."
+docker rm dksystem_vssgen;docker run -it --name dksystem_vssgen -v $HOME_DIR/.dk/dk_vssgeneration/:/app/dk_vssgeneration -v $HOME_DIR/.dk/dk_manager/vssmapping/dksystem_vssmapping_overlay.vspec:/app/.dk/dk_manager/vssmapping/vssmapping_overlay.vspec:ro $LOG_LIMIT_PARAM -e VSS_NAME=dksystem_vss.json -e VEHICLE_GEN=dksystem_vehicle_gen $DOCKER_HUB_NAMESPACE/dk_vssgeneration_image:vss4.0
+
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "Install vehicle data broker ... "
 docker pull ghcr.io/eclipse-kuksa/kuksa-databroker:0.4.4
 docker stop vehicledatabroker ; docker rm vehicledatabroker ; docker run -d -it --name vehicledatabroker -e KUKSA_DATA_BROKER_METADATA_FILE=/app/.dk/dk_vssgeneration/vss.json -e KUKSA_DATA_BROKER_PORT=55555 -e 50001 -e 3500 -v $HOME_DIR/.dk/dk_vssgeneration/vss.json:/app/.dk/dk_vssgeneration/vss.json --restart unless-stopped --network dk_network -p 55555:55555 $LOG_LIMIT_PARAM ghcr.io/eclipse-kuksa/kuksa-databroker:0.4.4 --insecure --vss /app/.dk/dk_vssgeneration/vss.json
+
+echo "Install dksystem vehicle data broker ... "
+docker pull ghcr.io/eclipse-kuksa/kuksa-databroker:0.4.4
+docker stop dksystem_vehicledatabroker ; docker rm dksystem_vehicledatabroker ; docker run -d -it --name dksystem_vehicledatabroker -e KUKSA_DATA_BROKER_METADATA_FILE=/app/.dk/dk_vssgeneration/vss.json -e KUKSA_DATA_BROKER_PORT=55555 -e 50001 -e 3500 -v $HOME_DIR/.dk/dk_vssgeneration/dksystem_vss.json:/app/.dk/dk_vssgeneration/vss.json --restart unless-stopped --network dk_network -p 55569:55555 $LOG_LIMIT_PARAM ghcr.io/eclipse-kuksa/kuksa-databroker:0.4.4 --insecure --vss /app/.dk/dk_vssgeneration/vss.json
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
@@ -158,6 +191,11 @@ echo "--------------------------------------------------------------------------
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "Install App/service installation service ... "
 docker pull $DOCKER_HUB_NAMESPACE/dk_appinstallservice:latest
+
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "Install OS SW Update service ... "
+docker pull ghcr.io/eclipse/kuksa.val/kuksa-client:0.4.2
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
