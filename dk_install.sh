@@ -255,9 +255,38 @@ EOF
 
 # Optionally, make the output file executable
 chmod +x "${DK_ENV_FILE}"
-
 echo "Environment variables with actual values have been saved to ${DK_ENV_FILE}"
 
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "Create sw history file for the first time"
+
+DK_SWHISTORY_FILE="/home/$DK_USER/.dk/dk_swupdate/dk_swhistory.json"
+
+# Check if dk_swhistory.json already exists
+if [ -f "$DK_SWHISTORY_FILE" ]; then
+    echo "$DK_SWHISTORY_FILE already exists. Exiting without changes."
+fi
+
+# Get current UTC timestamp in ISO 8601 format (e.g. 2023-10-01T10:15:30Z)
+timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# Create dk_swhistory.json with the JSON content and the actual timestamp
+cat <<EOF > $DK_SWHISTORY_FILE
+{
+  "SwUpdateHistory": [
+    {
+      "id": 1,
+      "timestamp": "${timestamp}",
+      "description": "Initial software.",
+      "version": "0.0.0",
+      "patch": ""
+    }
+  ]
+}
+EOF
+
+echo "$DK_SWHISTORY_FILE created with timestamp ${timestamp}"
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
