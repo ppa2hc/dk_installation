@@ -15,6 +15,10 @@ Vehicle.SwUpdate.UpdateTrigger:
   type: actuator
   description: ''
   datatype: boolean
+Vehicle.SwUpdate.PatchUpdateTrigger:
+  type: actuator
+  description: ''
+  datatype: boolean
 Vehicle.SwUpdate.Fota.UpdateTrigger:
   type: actuator
   description: ''

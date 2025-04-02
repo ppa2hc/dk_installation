@@ -72,7 +72,6 @@ echo "DOCKER_HUB_NAMESPACE: $DOCKER_HUB_NAMESPACE"
 echo "Create dk directoties ..."
 mkdir -p /home/$DK_USER/.dk/dk_manager/vssmapping /home/$DK_USER/.dk/dk_vssgeneration /home/$DK_USER/.dk/dk_swupdate
 cp $CURRENT_DIR/data/dksystem_vssmapping_overlay.vspec /home/$DK_USER/.dk/dk_manager/vssmapping/
-cd /home/$DK_USER/.dk
 
 echo "Create dk_network ..."
 docker network create dk_network
@@ -105,10 +104,11 @@ fi
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "Install installation repo"
-DK_INSTALLATION_DIR="$HOME_DIR/.dk/dk_installation"
-if [ ! -d "$DK_INSTALLATION_DIR" ]; then
+DK_INSTALLATION_DIR="$HOME_DIR/.dk/dk_swupdate"
+if [ ! -d "$DK_INSTALLATION_DIR/dk_installation" ]; then
     # Folder does not exist, do something
     echo "Folder $DK_INSTALLATION_DIR does not exist. Downloading ..."
+    cd $DK_INSTALLATION_DIR
     git clone https://github.com/ppa2hc/dk_installation.git
 else
     echo "Folder $DK_INSTALLATION_DIR already exists."
@@ -121,6 +121,7 @@ APP_PY_SDK_DIR="$HOME_DIR/.dk/dk_app_python_template"
 if [ ! -d "$APP_PY_SDK_DIR" ]; then
     # Folder does not exist, do something
     echo "Folder $APP_PY_SDK_DIR does not exist. Downloading ..."
+    cd "$HOME_DIR/.dk"
     git clone https://github.com/ppa2hc/dk_app_python_template.git
 else
     echo "Folder $APP_PY_SDK_DIR already exists."
@@ -174,6 +175,7 @@ if [[ "$dk_ara_demo" == "true" ]]; then
     if [ ! -d "$APP_CPP_SDK_DIR" ]; then
         # Folder does not exist, do something
         echo "Folder $APP_CPP_SDK_DIR does not exist. Downloading ..."
+        cd "$HOME_DIR/.dk"
         git clone https://github.com/ppa2hc/dk_app_cpp_template.git
     else
         echo "Folder $APP_CPP_SDK_DIR already exists."
