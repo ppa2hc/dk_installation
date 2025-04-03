@@ -10,6 +10,12 @@ Vehicle.SwUpdate.Fota:
 Vehicle.SwUpdate.XipHost:
   type: branch
   description: ''
+Vehicle.SwUpdate.Xip:
+  type: branch
+  description: ''
+Vehicle.SwUpdate.Vip:
+  type: branch
+  description: ''
   
 Vehicle.SwUpdate.UpdateTrigger:
   type: actuator
@@ -27,7 +33,11 @@ Vehicle.SwUpdate.XipHost.UpdateTrigger:
   type: actuator
   description: ''
   datatype: boolean
-  
+
+Vehicle.SwUpdate.IsNewUpdateAvailable:
+  type: sensor
+  description: ''
+  datatype: boolean  
 Vehicle.SwUpdate.CurrentVersion:
   type: sensor
   description: ''
@@ -69,6 +79,14 @@ Vehicle.SwUpdate.Fota.PercentageDone:
   description: ''
   datatype: uint8
 Vehicle.SwUpdate.XipHost.PercentageDone:
+  type: sensor
+  description: ''
+  datatype: uint8
+Vehicle.SwUpdate.Xip.PercentageDone:
+  type: sensor
+  description: ''
+  datatype: uint8
+Vehicle.SwUpdate.Vip.PercentageDone:
   type: sensor
   description: ''
   datatype: uint8

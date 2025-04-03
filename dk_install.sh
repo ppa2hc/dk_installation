@@ -265,10 +265,7 @@ echo "Create sw history file for the first time"
 
 DK_SWHISTORY_FILE="/home/$DK_USER/.dk/dk_swupdate/dk_swhistory.json"
 
-# Check if dk_swhistory.json already exists
-if [ -f "$DK_SWHISTORY_FILE" ]; then
-    echo "$DK_SWHISTORY_FILE already exists. Exiting without changes."
-fi
+> $DK_SWHISTORY_FILE
 
 # Get current UTC timestamp in ISO 8601 format (e.g. 2023-10-01T10:15:30Z)
 timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -276,6 +273,12 @@ timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 # Create dk_swhistory.json with the JSON content and the actual timestamp
 cat <<EOF > $DK_SWHISTORY_FILE
 {
+  "MetaData": {
+      "timestamp": "${timestamp}",
+      "description": "Initial software.",
+      "currentVersion": "0.0.0",
+      "patch": ""
+  },
   "SwUpdateHistory": [
     {
       "id": 1,
@@ -284,7 +287,13 @@ cat <<EOF > $DK_SWHISTORY_FILE
       "version": "0.0.0",
       "patch": ""
     }
-  ]
+  ],
+  "LastFailure": {
+      "timestamp": "",
+      "description": "",
+      "version": "",
+      "patch": ""
+  }
 }
 EOF
 
