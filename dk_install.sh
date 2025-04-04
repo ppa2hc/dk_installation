@@ -70,7 +70,7 @@ echo "LOG_LIMIT_PARAM: $LOG_LIMIT_PARAM"
 echo "DOCKER_HUB_NAMESPACE: $DOCKER_HUB_NAMESPACE"
 
 echo "Create dk directoties ..."
-mkdir -p /home/$DK_USER/.dk/dk_manager/vssmapping /home/$DK_USER/.dk/dk_vssgeneration /home/$DK_USER/.dk/dk_swupdate
+mkdir -p /home/$DK_USER/.dk/dk_manager/vssmapping /home/$DK_USER/.dk/dk_vssgeneration /home/$DK_USER/.dk/dk_swupdate /home/$DK_USER/.dk/dk_swupdate/dk_patch /home/$DK_USER/.dk/dk_swupdate/dk_current /home/$DK_USER/.dk/dk_swupdate/dk_current_patch
 cp $CURRENT_DIR/data/dksystem_vssmapping_overlay.vspec /home/$DK_USER/.dk/dk_manager/vssmapping/
 
 echo "Create dk_network ..."
