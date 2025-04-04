@@ -257,7 +257,7 @@ EOF
 
 # Optionally, make the output file executable
 chmod +x "${DK_ENV_FILE}"
-cp DK_ENV_FILE "${HOME_DIR}/.dk/dk_swupdate/dk_swupdate_env.sh"
+cp $DK_ENV_FILE "${HOME_DIR}/.dk/dk_swupdate/dk_swupdate_env.sh"
 echo "Environment variables with actual values have been saved to ${DK_ENV_FILE}"
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
