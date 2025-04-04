@@ -134,6 +134,11 @@ docker pull $DOCKER_HUB_NAMESPACE/dk_app_python_template:baseimage
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "Install kuksa-client ..."
+docker pull ghcr.io/eclipse/kuksa.val/kuksa-client:0.4.2
+
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "Install dk_manager ..."
 docker pull $DOCKER_HUB_NAMESPACE/dk_manager:latest
 docker stop dk_manager; docker rm dk_manager; docker run -d -it --name dk_manager $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM  -v $HOME_DIR/.dk:/app/.dk --restart unless-stopped -e USER=$DK_USER -e DOCKER_HUB_NAMESPACE=$DOCKER_HUB_NAMESPACE -e ARCH=$ARCH $DOCKER_HUB_NAMESPACE/dk_manager:latest
@@ -196,11 +201,6 @@ docker pull $DOCKER_HUB_NAMESPACE/dk_appinstallservice:latest
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
-echo "Install OS SW Update service ... "
-docker pull ghcr.io/eclipse/kuksa.val/kuksa-client:0.4.2
-
-echo "------------------------------------------------------------------------------------------------------------------------------------"
-echo "------------------------------------------------------------------------------------------------------------------------------------"
 # Install dk_ivi
 dk_ivi_value=""
 # Loop through all input arguments
@@ -213,7 +213,7 @@ for arg in "$@"; do
 done
 if [[ "$dk_ivi_value" == "true" ]]; then
     echo "enable xhost local"
-	$CURRENT_DIR/dk_enable_xhost.sh
+	$CURRENT_DIR/scripts/dk_enable_xhost.sh
     echo "Instal dk_ivi ..."
     docker pull $DOCKER_HUB_NAMESPACE/dk_ivi:latest
 
@@ -255,9 +255,15 @@ dk_ara_demo="${dk_ara_demo}"
 dk_ivi_value="${dk_ivi_value}"
 EOF
 
-# Optionally, make the output file executable
+# make the output file executable
 chmod +x "${DK_ENV_FILE}"
 cp $DK_ENV_FILE "${HOME_DIR}/.dk/dk_swupdate/dk_swupdate_env.sh"
+chmod +x "$CURRENT_DIR/scripts/dk_kuksa_client.sh"
+cp $CURRENT_DIR/scripts/dk_kuksa_client.sh /home/.dk/dk_swupdate/
+chmod +x "$CURRENT_DIR/scripts/dk_xiphost.sh"
+cp $CURRENT_DIR/scripts/dk_xiphost.sh /home/.dk/dk_swupdate/
+$CURRENT_DIR/scripts/create_dk_xiphost_service.sh
+
 echo "Environment variables with actual values have been saved to ${DK_ENV_FILE}"
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
@@ -299,6 +305,12 @@ cat <<EOF > $DK_SWHISTORY_FILE
 EOF
 
 echo "$DK_SWHISTORY_FILE created with timestamp ${timestamp}"
+
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "Install OS SW Update service ... "
+docker pull $DOCKER_HUB_NAMESPACE/dk_swupdate:latest
+docker stop dk_swupdate; docker rm dk_swupdate; docker run -d -it --name dk_swupdate $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM --network host -v $HOME_DIR/.dk:/app/.dk --restart unless-stopped -e DK_HOME="/app" $DOCKER_HUB_NAMESPACE/dk_swupdate:latest
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
