@@ -310,7 +310,7 @@ echo "--------------------------------------------------------------------------
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "Install OS SW Update service ... "
 docker pull $DOCKER_HUB_NAMESPACE/dk_swupdate:latest
-docker stop dk_swupdate; docker rm dk_swupdate; docker run -d -it --name dk_swupdate $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM --network host -v $HOME_DIR/.dk:/app/.dk --restart unless-stopped -e DK_HOME="/app" $DOCKER_HUB_NAMESPACE/dk_swupdate:latest
+docker stop dk_swupdate; docker rm dk_swupdate; docker run -d -it --name dk_swupdate $LOG_LIMIT_PARAM -v /var/run/docker.sock:/var/run/docker.sock --network host -v $HOME_DIR/.dk:/app/.dk --restart unless-stopped -e DK_HOME="/app" $DOCKER_HUB_NAMESPACE/dk_swupdate:latest
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
