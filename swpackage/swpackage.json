@@ -1,9 +1,9 @@
 {
-  "version": "0.0.3",
+  "version": "0.0.4",
   "patch": "",
   "releasenotes": "<h1>Release Update</h1><p>Initial release with core functionalities.</p><p>Features include:<br>- XIP script for experimental features<br>- VIP script for premium functionality<br>- Enhanced performance and stability</p>",
   "xiphostupdate": true,
-  "xipupdate": false,
+  "xipupdate": true,
   "vipupdate": false,
   "fotaupdate": false
 }
