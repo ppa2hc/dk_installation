@@ -20,7 +20,7 @@ while true; do
     ###############  Vehicle.SwUpdate.XipHost.UpdateTrigger ##################################
     ##########################################################################################
     # Use command substitution to capture the output of the child script.
-    result=$(/home/.dk/dk_swupdate/dk_kuksa_client.sh getTargetValue Vehicle.SwUpdate.XipHost.UpdateTrigger)
+    result=$(/home/.dk/dk_swupdate/dk_kuksa_client.sh getValue Vehicle.SwUpdate.XipHost.UpdateTrigger)
     # Capture the exit code from the child script.
     exit_code=$?
     # Print the output and the exit code.
@@ -31,7 +31,7 @@ while true; do
         if [[ $result == *'true'* ]]; then
             echo "UpdateTrigger is true, executing update command..."
             # Execute your update command here:
-            /home/.dk/dk_swupdate/dk_kuksa_client.sh setTargetValue Vehicle.SwUpdate.XipHost.UpdateTrigger False
+            /home/.dk/dk_swupdate/dk_kuksa_client.sh setValue Vehicle.SwUpdate.XipHost.UpdateTrigger False
             ret=$("$HOME_DIR/.dk/dk_swupdate/dk_installation/swpackage/xip/xiphost.sh")
             e_code=$?
             if [ $e_code -eq 0 ]; then
@@ -51,7 +51,7 @@ while true; do
     ###############  Vehicle.SwUpdate.XipHost.PatchUpdateTrigger ##################################
     ##########################################################################################
     # Use command substitution to capture the output of the child script.
-    result=$(/home/.dk/dk_swupdate/dk_kuksa_client.sh getTargetValue Vehicle.SwUpdate.XipHost.PatchUpdateTrigger)
+    result=$(/home/.dk/dk_swupdate/dk_kuksa_client.sh getValue Vehicle.SwUpdate.XipHost.PatchUpdateTrigger)
     # Capture the exit code from the child script.
     exit_code=$?
     # Print the output and the exit code.
@@ -62,7 +62,7 @@ while true; do
         if [[ $result == *'true'* ]]; then
             echo "PatchUpdateTrigger is true, executing update command..."
             # Execute your update command here:
-            /home/.dk/dk_swupdate/dk_kuksa_client.sh setTargetValue Vehicle.SwUpdate.XipHost.PatchUpdateTrigger False
+            /home/.dk/dk_swupdate/dk_kuksa_client.sh setValue Vehicle.SwUpdate.XipHost.PatchUpdateTrigger False
             ret=$("$HOME_DIR/.dk/dk_swupdate/dk_patch/swpackage/xip/xiphost.sh")
             e_code=$?
             if [ $e_code -eq 0 ]; then

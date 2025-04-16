@@ -18,19 +18,19 @@ Vehicle.SwUpdate.Vip:
   description: ''
   
 Vehicle.SwUpdate.UpdateTrigger:
-  type: actuator
+  type: sensor
   description: ''
   datatype: boolean
 Vehicle.SwUpdate.PatchUpdateTrigger:
-  type: actuator
+  type: sensor
   description: ''
   datatype: boolean
 Vehicle.SwUpdate.Fota.UpdateTrigger:
-  type: actuator
+  type: sensor
   description: ''
   datatype: boolean
 Vehicle.SwUpdate.XipHost.UpdateTrigger:
-  type: actuator
+  type: sensor
   description: ''
   datatype: boolean
 
