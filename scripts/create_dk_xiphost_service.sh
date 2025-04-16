@@ -39,6 +39,7 @@ systemctl enable dk_xiphost.service
 
 # Start the service
 echo "Starting dk_xiphost service..."
+systemctl stop dk_xiphost.service
 systemctl start dk_xiphost.service
 
 echo "Service dk_xiphost has been created, enabled, and started."
