@@ -124,14 +124,9 @@ echo "--------------------------------------------------------------------------
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "Install installation repo"
 DK_INSTALLATION_DIR="$HOME_DIR/.dk/dk_swupdate"
-if [ ! -d "$DK_INSTALLATION_DIR/dk_installation" ]; then
-    # Folder does not exist, do something
-    echo "Folder $DK_INSTALLATION_DIR does not exist. Downloading ..."
-    cd $DK_INSTALLATION_DIR
-    git clone https://github.com/ppa2hc/dk_installation.git
-else
-    echo "Folder $DK_INSTALLATION_DIR already exists."
-fi
+cd $DK_INSTALLATION_DIR
+rm -rf dk_installation
+git clone https://github.com/ppa2hc/dk_installation.git
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
