@@ -73,9 +73,6 @@ echo "Create dk directoties ..."
 mkdir -p /home/$DK_USER/.dk/dk_manager/vssmapping /home/$DK_USER/.dk/dk_vssgeneration /home/$DK_USER/.dk/dk_swupdate /home/$DK_USER/.dk/dk_swupdate/dk_patch /home/$DK_USER/.dk/dk_swupdate/dk_current /home/$DK_USER/.dk/dk_swupdate/dk_current_patch
 cp $CURRENT_DIR/data/dksystem_vssmapping_overlay.vspec /home/$DK_USER/.dk/dk_manager/vssmapping/
 
-echo "Create dk_network ..."
-docker network create dk_network
-
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "Install required utils"
@@ -100,6 +97,28 @@ else
         exit 1
     fi
 fi
+
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+# setup local registry
+dk_vip_demo=""
+# Loop through all input arguments
+for arg in "$@"; do
+    # Check if the argument starts with dk_ara_demo=
+    if [[ "$arg" == dk_vip_demo=* ]]; then
+        # Extract the value after the equal sign
+        dk_vip_demo="${arg#*=}"
+    fi
+done
+if [[ "$dk_vip_demo" == "true" ]]; then
+    echo "setup local registry"
+    $CURRENT_DIR/scripts/create_dk_xiphost_service.sh
+fi
+
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "------------------------------------------------------------------------------------------------------------------------------------"
+echo "Create dk_network ..."
+docker network create dk_network
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
@@ -253,6 +272,7 @@ LOG_LIMIT_PARAM="${LOG_LIMIT_PARAM}"
 DOCKER_HUB_NAMESPACE="${DOCKER_HUB_NAMESPACE}"
 dk_ara_demo="${dk_ara_demo}"
 dk_ivi_value="${dk_ivi_value}"
+dk_vip_demo="${dk_vip_demo}"
 EOF
 
 # make the output file executable
