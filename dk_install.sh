@@ -112,7 +112,7 @@ for arg in "$@"; do
 done
 if [[ "$dk_vip_demo" == "true" ]]; then
     echo "setup local registry"
-    $CURRENT_DIR/scripts/create_dk_xiphost_service.sh
+    $CURRENT_DIR/scripts/setup_local_docker_registry.sh
 fi
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
