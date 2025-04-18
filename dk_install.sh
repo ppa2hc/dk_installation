@@ -155,7 +155,7 @@ echo "--------------------------------------------------------------------------
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "Install dk_manager ..."
 docker pull $DOCKER_HUB_NAMESPACE/dk_manager:latest
-docker stop dk_manager; docker rm dk_manager; docker run -d -it --name dk_manager $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM  -v $HOME_DIR/.dk:/app/.dk --restart unless-stopped -e USER=$DK_USER -e DOCKER_HUB_NAMESPACE=$DOCKER_HUB_NAMESPACE -e ARCH=$ARCH $DOCKER_HUB_NAMESPACE/dk_manager:latest
+docker stop dk_manager; docker rm dk_manager; docker run -d -it --name dk_manager --network host $LOG_LIMIT_PARAM $DOCKER_SHARE_PARAM  -v $HOME_DIR/.dk:/app/.dk --restart unless-stopped -e USER=$DK_USER -e DOCKER_HUB_NAMESPACE=$DOCKER_HUB_NAMESPACE -e ARCH=$ARCH $DOCKER_HUB_NAMESPACE/dk_manager:latest
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
