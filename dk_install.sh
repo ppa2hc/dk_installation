@@ -143,13 +143,19 @@ fi
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
-echo "Install base image for velocitas py app ..."
+echo "Install base images "
 docker pull $DOCKER_HUB_NAMESPACE/dk_app_python_template:baseimage
+docker pull $DOCKER_HUB_NAMESPACE/dk_vssgeneration_image:vss4.0
+docker pull ghcr.io/eclipse/kuksa.val/kuksa-client:0.4.2
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
-echo "Install kuksa-client ..."
-docker pull ghcr.io/eclipse/kuksa.val/kuksa-client:0.4.2
+echo "Install vss_generation for dksystem..."
+docker rm dksystem_vssgen;docker run -it --name dksystem_vssgen -v $HOME_DIR/.dk/dk_vssgeneration/:/app/dk_vssgeneration -v $HOME_DIR/.dk/dk_manager/vssmapping/dksystem_vssmapping_overlay.vspec:/app/.dk/dk_manager/vssmapping/vssmapping_overlay.vspec:ro $LOG_LIMIT_PARAM -e VSS_NAME=dksystem_vss.json -e VEHICLE_GEN=dksystem_vehicle_gen $DOCKER_HUB_NAMESPACE/dk_vssgeneration_image:vss4.0
+
+echo "Install dksystem vehicle data broker ... "
+docker pull ghcr.io/eclipse-kuksa/kuksa-databroker:0.4.4
+docker stop dksystem_vehicledatabroker ; docker rm dksystem_vehicledatabroker ; docker run -d -it --name dksystem_vehicledatabroker -e KUKSA_DATA_BROKER_METADATA_FILE=/app/.dk/dk_vssgeneration/vss.json -e KUKSA_DATA_BROKER_PORT=55555 -e 50001 -e 3500 -v $HOME_DIR/.dk/dk_vssgeneration/dksystem_vss.json:/app/.dk/dk_vssgeneration/vss.json --restart unless-stopped --network dk_network -p 55569:55555 $LOG_LIMIT_PARAM ghcr.io/eclipse-kuksa/kuksa-databroker:0.4.4 --insecure --vss /app/.dk/dk_vssgeneration/vss.json
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
@@ -160,21 +166,12 @@ docker stop dk_manager; docker rm dk_manager; docker run -d -it --name dk_manage
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "Install vss_generation ..."
-docker pull $DOCKER_HUB_NAMESPACE/dk_vssgeneration_image:vss4.0
 docker rm vssgen;docker run -it --name vssgen -v $HOME_DIR/.dk/dk_vssgeneration/:/app/dk_vssgeneration -v $HOME_DIR/.dk/dk_manager/vssmapping/vssmapping_overlay.vspec:/app/.dk/dk_manager/vssmapping/vssmapping_overlay.vspec:ro $LOG_LIMIT_PARAM $DOCKER_HUB_NAMESPACE/dk_vssgeneration_image:vss4.0
-
-echo "Install vss_generation for dksystem..."
-docker rm dksystem_vssgen;docker run -it --name dksystem_vssgen -v $HOME_DIR/.dk/dk_vssgeneration/:/app/dk_vssgeneration -v $HOME_DIR/.dk/dk_manager/vssmapping/dksystem_vssmapping_overlay.vspec:/app/.dk/dk_manager/vssmapping/vssmapping_overlay.vspec:ro $LOG_LIMIT_PARAM -e VSS_NAME=dksystem_vss.json -e VEHICLE_GEN=dksystem_vehicle_gen $DOCKER_HUB_NAMESPACE/dk_vssgeneration_image:vss4.0
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "Install vehicle data broker ... "
-docker pull ghcr.io/eclipse-kuksa/kuksa-databroker:0.4.4
 docker stop vehicledatabroker ; docker rm vehicledatabroker ; docker run -d -it --name vehicledatabroker -e KUKSA_DATA_BROKER_METADATA_FILE=/app/.dk/dk_vssgeneration/vss.json -e KUKSA_DATA_BROKER_PORT=55555 -e 50001 -e 3500 -v $HOME_DIR/.dk/dk_vssgeneration/vss.json:/app/.dk/dk_vssgeneration/vss.json --restart unless-stopped --network dk_network -p 55555:55555 $LOG_LIMIT_PARAM ghcr.io/eclipse-kuksa/kuksa-databroker:0.4.4 --insecure --vss /app/.dk/dk_vssgeneration/vss.json
-
-echo "Install dksystem vehicle data broker ... "
-docker pull ghcr.io/eclipse-kuksa/kuksa-databroker:0.4.4
-docker stop dksystem_vehicledatabroker ; docker rm dksystem_vehicledatabroker ; docker run -d -it --name dksystem_vehicledatabroker -e KUKSA_DATA_BROKER_METADATA_FILE=/app/.dk/dk_vssgeneration/vss.json -e KUKSA_DATA_BROKER_PORT=55555 -e 50001 -e 3500 -v $HOME_DIR/.dk/dk_vssgeneration/dksystem_vss.json:/app/.dk/dk_vssgeneration/vss.json --restart unless-stopped --network dk_network -p 55569:55555 $LOG_LIMIT_PARAM ghcr.io/eclipse-kuksa/kuksa-databroker:0.4.4 --insecure --vss /app/.dk/dk_vssgeneration/vss.json
 
 echo "------------------------------------------------------------------------------------------------------------------------------------"
 echo "------------------------------------------------------------------------------------------------------------------------------------"
