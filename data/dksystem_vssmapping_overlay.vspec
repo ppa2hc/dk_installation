@@ -16,6 +16,18 @@ Vehicle.SwUpdate.Xip:
 Vehicle.SwUpdate.Vip:
   type: branch
   description: ''
+Vehicle.AboutSystem:
+  type: branch
+  description: ''
+
+Vehicle.AboutSystem.DiskCapacity:
+  type: sensor
+  description: ''
+  datatype: string
+Vehicle.AboutSystem.DiskAvailable:
+  type: sensor
+  description: ''
+  datatype: string
   
 Vehicle.SwUpdate.UpdateTrigger:
   type: sensor
