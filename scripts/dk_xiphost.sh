@@ -16,7 +16,7 @@ echo "dk_ara_demo: $dk_ara_demo"
 echo "dk_ivi_value: $dk_ivi_value"
 
 # Function to get disk total and available size for a given path
-get_disk_usage() {
+update_disk_usage() {
     local path="${1:-/}"  # Default to root if no argument given
 
     # Get df output line for the path
@@ -28,9 +28,9 @@ get_disk_usage() {
     total_size=$(echo "$df_output" | awk '{print $2}')
     available_size=$(echo "$df_output" | awk '{print $4}')
 
-    echo "Disk usage for path: $path"
-    echo "  Total Size: $total_size"
-    echo "  Available Size: $available_size"
+    # echo "Disk usage for path: $path"
+    # echo "  Total Size: $total_size"
+    # echo "  Available Size: $available_size"
 
     /home/.dk/dk_swupdate/dk_kuksa_client.sh setValue Vehicle.AboutSystem.DiskCapacity "$total_size"
     /home/.dk/dk_swupdate/dk_kuksa_client.sh setValue Vehicle.AboutSystem.DiskAvailable "$available_size"
@@ -43,7 +43,7 @@ while true; do
     ##########################################################################################
     ###############  Update Disk Capacity Information ########################################
     ##########################################################################################
-    get_disk_usage "/"  # Check root
+    update_disk_usage "/"  # Check root
 
 
     ##########################################################################################
