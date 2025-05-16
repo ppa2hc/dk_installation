@@ -19,6 +19,7 @@ sudo tee "$DAEMON_JSON" > /dev/null <<EOF
 EOF
 
 echo "Done. Restart Docker daemon to apply changes:"
+docker kill dk_ivi
 systemctl restart docker
 echo "Restart Docker daemon done."
 
